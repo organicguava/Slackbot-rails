@@ -40,18 +40,37 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+# Slack bot essentials
+gem "slack-ruby-client", "~> 3.1"   # Slack API client
+gem "faraday", "~> 2.14"            # HTTP client
+
+# Background jobs (替代 solid_queue 或並用)
+gem "good_job", "~> 4.13"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
-  gem "bundler-audit", require: false
+  gem "bundler-audit", "~> 0.9", require: false
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", require: false
+  gem "brakeman", "~> 7.1", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
+  gem "rubocop-rails-omakase", "~> 1.1", require: false
+
+  # Testing
+  gem "rspec-rails", "~> 8.0"
+  gem "factory_bot_rails", "~> 6.5"
+  gem "faker", "~> 3.5"
+  gem "webmock", "~> 3.26"
+  gem "vcr", "~> 6.4"
+end
+
+group :test do
+  gem "shoulda-matchers", "~> 7.0"
+  gem "simplecov", "~> 0.22", require: false
 end
 
 group :development do
