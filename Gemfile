@@ -47,6 +47,10 @@ gem "faraday", "~> 2.14"            # HTTP client
 # Background jobs (替代 solid_queue 或並用)
 gem "good_job", "~> 4.13"
 
+# 適合抓取多個projet 或大量API資料時使用的非同步HTTP客戶端
+gem 'async-http', '~> 0.52.3'
+gem 'async-http-faraday'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
