@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_09_064453) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_043227) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "gitlab_configs", force: :cascade do |t|
+    t.string "access_token"
+    t.string "base_url"
+    t.datetime "created_at", null: false
+    t.bigint "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_gitlab_configs_on_project_id"
+  end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "callback_priority"
@@ -104,4 +113,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_09_064453) do
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
+
+  create_table "projects", force: :cascade do |t|
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.string "slug"
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "gitlab_configs", "projects"
 end
