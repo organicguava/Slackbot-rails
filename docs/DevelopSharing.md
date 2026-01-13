@@ -1,3 +1,68 @@
+
+# GitLab Events API 技術簡介
+
+## 什麼是 Events API？
+
+GitLab Events API 提供一個 RESTful 介面，讓你可以查詢「誰、在什麼時候、對專案做了什麼事」。
+這些事件涵蓋 Push、Merge、Comment、Issue、Branch 操作等，是自動化專案統計、活動追蹤、報表產生的基礎。
+
+## 主要用途
+
+- 取得專案的「活動紀錄」(Activity Feed)
+- 統計每日 Push、Merge、Comment 等行為
+- 追蹤團隊貢獻、產生自動化進度摘要
+- 整合 LLM/AI 進行智慧總結
+
+## 主要 API 路徑
+
+- **List all events**  
+    `GET /events`  
+    取得目前使用者的所有事件（跨專案）
+
+- **List project events**  
+    `GET /projects/:id/events`  
+    取得指定專案的所有事件（最常用於專案統計）
+
+## 回傳資料結構
+
+每個 event 會包含：
+- `action_name`：事件動作（如 pushed to、accepted、commented on、deleted）
+- `author`：觸發事件的使用者
+- `created_at`：事件發生時間
+- `target_type`：目標類型（如 Commit、MergeRequest、Issue）
+- 其他與事件相關的欄位
+
+## 常見 action_name 與對應行為
+
+| action_name   | 說明                |
+|---------------|---------------------|
+| pushed to     | Push 代碼           |
+| accepted      | Merge Request 合併  |
+| commented on  | 留言                |
+| deleted       | 刪除分支            |
+
+## 權限與認證
+
+- 需帶上 Personal Access Token（建議 scope: `read_api`）
+- 只會回傳你有權限存取的專案事件
+
+## 實務應用
+
+- 每日自動統計專案進度
+- 產生 Slack/Email 報表
+- 作為 LLM（如 Gemini、GPT）自動摘要的資料來源
+- 追蹤團隊貢獻、分析開發節奏
+
+## 技術重點
+
+- 支援分頁與時間篩選（可用於每日/每週統計）
+- 回傳資料結構穩定，適合自動化處理
+- 可與 Redmine、Slack 等其他平台資料整合
+
+## 官方文件
+
+- [GitLab Events API 官方說明](https://docs.gitlab.com/ee/api/events.html)
+
 # GitLab 與 Slack API Token 取得與權限設定
 
 
@@ -73,3 +138,6 @@ Token 遺失或外洩，立即註銷重建。
 | `vcr` | 6.4.0 | 錄製/重播 HTTP 請求 |
 | `shoulda-matchers` | 7.0.1 | Model/Controller 測試 matchers |
 | `simplecov` | 0.22.0 | 測試覆蓋率報告 |
+
+
+

@@ -17,4 +17,6 @@ class GitlabClient
     raise "GitLab API error: #{response.status}" unless response.success?
     JSON.parse(response.body)
   end
+
+
 end
