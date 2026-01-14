@@ -1,0 +1,6 @@
+enable_cron: true
+cron:
+  daily_summary:
+    cron: "30 18 * * 1-5" # 每個工作日 18:30
+    class: DailySummaryJob
+    description: "自動抓取 GitLab 資料並發送 Slack 摘要"

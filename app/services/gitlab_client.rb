@@ -3,20 +3,24 @@ require 'json'
 
 class GitlabClient
   def initialize(base_url:, access_token:)
-    @base_url = base_url
-    @access_token = access_token
-    @conn = Faraday.new(url: @base_url) do |f|
-      f.request :authorization, 'Bearer', @access_token
-      f.adapter Faraday.default_adapter
-    end
+    @client = Gitlab.client(
+      endpoint: "#{base_url}/api/v4", # gem 需要加上 /api/v4
+      private_token: access_token
+    )
   end
 
-  # 取得指定 project 的 events
+  
+
   def fetch_events(project_id, params = {})
-    response = @conn.get("/api/v4/projects/#{project_id}/events", params)
-    raise "GitLab API error: #{response.status}" unless response.success?
-    JSON.parse(response.body)
+    # 使用 gem 的方法
+    # auto_paginate: true 會自動幫你翻頁抓取所有資料
+    events = @client.project_events(project_id, params)
+    
+    # gem 回傳的是 ObjectifiedHash，轉成純 Hash 比較好跟後面的 Service 相容
+    events.map(&:to_h) 
+  rescue Gitlab::Error::Error => e
+    # 統一捕捉 gem 的錯誤並拋出，方便 Job 紀錄
+    raise "Gitlab API Error: #{e.message}"
   end
-
 
 end
