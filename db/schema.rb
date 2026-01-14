@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_12_043227) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_14_072606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -117,10 +117,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_043227) do
   create_table "projects", force: :cascade do |t|
     t.boolean "active"
     t.datetime "created_at", null: false
+    t.string "gitlab_project_id"
     t.string "name"
+    t.string "slack_channel_id"
     t.string "slug"
     t.datetime "updated_at", null: false
   end
 
+  create_table "summary_logs", force: :cascade do |t|
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.date "log_date"
+    t.bigint "project_id", null: false
+    t.string "status"
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_summary_logs_on_project_id"
+  end
+
   add_foreign_key "gitlab_configs", "projects"
+  add_foreign_key "summary_logs", "projects"
 end
