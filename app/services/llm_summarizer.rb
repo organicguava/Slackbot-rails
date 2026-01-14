@@ -7,13 +7,13 @@ class LlmSummarizer
 
   def summary
     prompt = build_prompt(@events)
-    result = RubyLLM.chat(
-      model: :gemini_pro,
-      messages: [
-        { role: "user", content: prompt }
-      ]
+    chat = RubyLLM.chat(
+      provider: :openai,       
+      model: 'gpt-4o',         
+      assume_model_exists: true # 加上這個參數是保險做法，強制 gem 接受這個型號
     )
-    result.text
+    response = chat.ask(prompt)
+    response.content
   end
 
   private
