@@ -1,0 +1,64 @@
+# 抓取MR及對話
+module DataFetchers
+  class Gitlab
+    # 定義 API 版本
+    API_BASE = 'api/v4'.freeze
+
+    def initialize
+      # 從 credentials 讀取設定 (對應 p2.5_dev_manual.md 安全性規範)
+      @base_url = Rails.application.credentials.dig(:gitlab, :base_url) || "https://git.5xruby.com"
+      @token = Rails.application.credentials.dig(:gitlab, :access_token)
+      
+      # 初始化 Faraday Client，未來可在此加入 Retry 機制
+      @client = Faraday.new(url: @base_url) do |f|
+        f.headers['PRIVATE-TOKEN'] = @token
+        f.adapter Faraday.default_adapter
+      end
+    end
+
+    # 主要功能：抓取 MR 及其討論串
+    # project_id: 506, mr_iid: 1 (注意是 IID)
+    def fetch_mr_context(project_id, mr_iid)
+      # 1. 抓取 MR 本體資訊
+      mr_raw = get_json("#{API_BASE}/projects/#{project_id}/merge_requests/#{mr_iid}")
+      
+      # 2. 抓取 MR 留言 (Notes)
+      notes_raw = get_json("#{API_BASE}/projects/#{project_id}/merge_requests/#{mr_iid}/notes?sort=asc")
+
+      # 3. 進行 Inline Cleaning (行內清洗)
+      {
+        source: 'gitlab',
+        id: mr_raw['iid'],
+        title: mr_raw['title'],
+        description: mr_raw['description'], # 用於稍後解析 Redmine Ticket ID
+        state: mr_raw['state'],
+        web_url: mr_raw['web_url'],
+        # 過濾 system: true 的雜訊，只保留人類對話
+        discussions: clean_discussions(notes_raw)
+      }
+    rescue Faraday::Error => e
+      Rails.logger.error "GitLab API Error: #{e.message}"
+      nil
+    end
+
+    private
+
+    def get_json(path)
+      response = @client.get(path)
+      unless response.success?
+        raise Faraday::Error, "GitLab Request Failed: #{response.status} #{response.body}"
+      end
+      JSON.parse(response.body)
+    end
+
+    def clean_discussions(notes)
+      notes.select { |n| n['system'] == false }.map do |n|
+        {
+          user: n['author']['name'],
+          body: n['body'],
+          created_at: n['created_at']
+        }
+      end
+    end
+  end
+end
