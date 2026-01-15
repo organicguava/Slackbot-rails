@@ -12,7 +12,7 @@ class SlackPoster
     blocks = [
       {
         type: "header",
-        text: { type: "plain_text", text: "📅 每日專案進度總結 - #{Date.today}" }
+        text: { type: "plain_text", text: "每日專案進度總結 - #{Date.today}" }
       },
       {
         type: "section",
