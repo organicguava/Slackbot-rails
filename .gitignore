@@ -64,3 +64,4 @@
 
 # Node (for TailwindCSS if needed)
 node_modules/
+.github/agents/SlackBot_Agent.agent.md
