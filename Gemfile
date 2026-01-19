@@ -57,6 +57,10 @@ gem "ruby_llm"
 # Load environment variables from .env file in development and test environments
 gem "dotenv-rails"
 
+# source : https://github.com/NARKOZ/gitlab
+gem 'gitlab'
+
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
