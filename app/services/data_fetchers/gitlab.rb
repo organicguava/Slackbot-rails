@@ -41,6 +41,29 @@ module DataFetchers
       nil
     end
 
+
+    # 抓取過去 24 小時有更新的 MR 列表
+    def fetch_daily_mrs(project_id)
+      # created_after: 新建立的, updated_after: 有新動態的
+      # state: opened (只關心進行中的) 或 all (看需求)
+      params = {
+        scope: 'all',
+        state: 'opened',
+        updated_after: 1.day.ago.iso8601,
+        per_page: 20
+      }
+      
+      # 這裡只需要抓簡易列表，拿到 IID 即可
+      results = get_json("#{API_BASE}/projects/#{project_id}/merge_requests?#{params.to_query}")
+      
+      # 只回傳需要的 IID 與 Title 供初步篩選
+      results.map { |mr| { iid: mr['iid'], title: mr['title'] } }
+    rescue Faraday::Error => e
+      Rails.logger.error "GitLab Fetch List Error: #{e.message}"
+      []
+
+    end
+
     private
 
     def get_json(path)
@@ -60,5 +83,8 @@ module DataFetchers
         }
       end
     end
+
+
+
   end
 end

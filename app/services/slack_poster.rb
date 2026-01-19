@@ -26,7 +26,7 @@ class SlackPoster
       }
     ]
 
-    # text 參數是給通知預覽用的 (Fallback)
+    # 會在終端機或 Log 中顯示發送結果
     @client.chat_postMessage(channel: @channel_id, blocks: blocks, text: "本日專案進度摘要已送達")
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Slack API Error: #{e.message}"

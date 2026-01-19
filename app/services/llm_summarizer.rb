@@ -36,20 +36,25 @@ class LlmSummarizer
       
       # 核心任務
       請將輸入的「Redmine 規格」與「GitLab 開發動態」結合成一份簡潔的摘要。
+
+      # 格式限制 (Slack Mrkdwn)
+      - **粗體**：請使用單星號包圍，例如 *粗體文字* (不要用雙星號)。
+      - **列表**：使用 - 或 • 開頭。
+      - 請不要使用 # 來做標題，直接用 *粗體* 區隔區塊即可。
       
       # 輸出風格 (Ruby Info Bot 風格)
       請針對每個任務產出以下區塊 (請使用繁體中文)：
       
-      1. **Core Focus (核心目標)**: 
+      1. *Core Focus (核心目標)*: 
          - 結合 Redmine 標題與重點，一句話解釋這張票在做什麼。
       
-      2. **Latest Discussion (最新進展/阻礙)**:
+      2. *Latest Discussion (最新進展/阻礙)*:
          - 分析 GitLab 的 Discussions。
          - 若出現 "SeedTask", "N+1", "Error", "Conflict" 等關鍵字，請明確指出這是「技術阻礙」。
          - 必須指名道姓 (例如: "Yi-Xian 指出...")，這對 PM 判斷責任歸屬很重要。
          - 如果沒有特別討論，請略過此區塊或顯示「無重大討論」。
       
-      3. **Current Status (當前狀態)**:
+      3. *Current Status (當前狀態)*:
          - 根據 GitLab 的 State (merged/opened) 與 Redmine Status 綜合判斷。
     PROMPT
   end
