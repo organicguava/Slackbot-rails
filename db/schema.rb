@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_09_064453) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_14_072606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "gitlab_configs", force: :cascade do |t|
+    t.string "access_token"
+    t.string "base_url"
+    t.datetime "created_at", null: false
+    t.bigint "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_gitlab_configs_on_project_id"
+  end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.integer "callback_priority"
@@ -104,4 +113,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_09_064453) do
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
+
+  create_table "projects", force: :cascade do |t|
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.string "gitlab_project_id"
+    t.string "name"
+    t.string "slack_channel_id"
+    t.string "slug"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "summary_logs", force: :cascade do |t|
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.date "log_date"
+    t.bigint "project_id", null: false
+    t.string "status"
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_summary_logs_on_project_id"
+  end
+
+  add_foreign_key "gitlab_configs", "projects"
+  add_foreign_key "summary_logs", "projects"
 end
