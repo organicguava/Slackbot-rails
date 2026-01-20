@@ -4,12 +4,10 @@ module DataFetchers
     # 定義 API 版本
     API_BASE = 'api/v4'.freeze
 
-    def initialize
-      # 從 credentials 讀取設定 (對應 p2.5_dev_manual.md 安全性規範)
-      @base_url = Rails.application.credentials.dig(:gitlab, :base_url) || "https://git.5xruby.com"
-      @token = Rails.application.credentials.dig(:gitlab, :access_token)
+    def initialize(base_url:, token:)
+      @base_url = base_url
+      @token = token
       
-      # 初始化 Faraday Client，未來可在此加入 Retry 機制
       @client = Faraday.new(url: @base_url) do |f|
         f.headers['PRIVATE-TOKEN'] = @token
         f.adapter Faraday.default_adapter
