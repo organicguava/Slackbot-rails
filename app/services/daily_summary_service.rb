@@ -1,16 +1,34 @@
 class DailySummaryService
-  def initialize(project_id:, slack_channel_id:)
+  def initialize(project_id:)
     @project = Project.find(project_id)
     
     # check:檢查db欄位設置是否有更新
-    # 根據 schema.rb，你的 projects table 有 gitlab_project_id 和 slack_channel_id
-    @gitlab_project_id = @project.gitlab_project_id
-    @slack_channel_id = @project.slack_channel_id
+    gl_config = @project.gitlab_config
+    raise "GitLab Config missing for project #{@project.id}" unless gl_config
+
+    @gitlab_project_id = gl_config.gitlab_project_id
+
+    @gitlab_fetcher = DataFetchers::Gitlab.new(
+      base_url: gl_config.base_url, 
+      token: gl_config.access_token
+    )
     
-    @gitlab_fetcher = DataFetchers::Gitlab.new
-    @redmine_fetcher = DataFetchers::Redmine.new
-    @slack_poster = SlackPoster.new(@slack_channel_id)
+    rm_config = @project.redmine_config
+    if rm_config
+      @redmine_fetcher = DataFetchers::Redmine.new(
+        base_url: rm_config.base_url, 
+        api_key: rm_config.api_key
+      )
+    end
+    
+
+    sl_config = @project.slack_config
+    @slack_poster = SlackPoster.new(
+      sl_config.channel_id, 
+      sl_config.bot_token
+    )
   end
+  
 
   def perform(force_refresh: false) # 加入參數是為了測試用，因為原本的邏輯是一天只會跑一次
 

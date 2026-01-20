@@ -1,8 +1,8 @@
 module DataFetchers
   class Redmine
-    def initialize
-      @base_url = Rails.application.credentials.dig(:redmine, :base_url) || "https://redmine.5xruby.com"
-      @api_key = Rails.application.credentials.dig(:redmine, :api_key)
+    def initialize(base_url:, api_key:)
+      @base_url = base_url
+      @api_key = api_key
 
       @client = Faraday.new(url: @base_url) do |f|
         f.headers['X-Redmine-API-Key'] = @api_key

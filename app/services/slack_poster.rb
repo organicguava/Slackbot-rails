@@ -1,10 +1,13 @@
 require 'slack-ruby-client'
 
 class SlackPoster
-  def initialize(channel_id)
+  def initialize(channel_id, token)
     @channel_id = channel_id
-    # 從 credentials 讀取 Token
-    @client = Slack::Web::Client.new(token: Rails.application.credentials.slack[:bot_token])
+    @token = token
+    Slack.configure do |config|
+      config.token = @token
+    end
+    @client = Slack::Web::Client.new
   end
 
   def post(text)
@@ -30,6 +33,7 @@ class SlackPoster
     @client.chat_postMessage(channel: @channel_id, blocks: blocks, text: "本日專案進度摘要已送達")
   rescue Slack::Web::Api::Errors::SlackError => e
     Rails.logger.error "Slack API Error: #{e.message}"
-    # 這裡可以選擇是否要 raise error 讓 Job 重試，目前先記錄 Log
+    #  raise error 讓 Job 可以捕捉到錯誤並決定是否重試
+    raise e
   end
 end

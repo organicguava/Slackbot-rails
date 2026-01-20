@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_14_072606) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_20_025140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,6 +18,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_072606) do
     t.string "access_token"
     t.string "base_url"
     t.datetime "created_at", null: false
+    t.string "gitlab_project_id", comment: "GitLab 遠端專案 ID (例如: 506)"
     t.bigint "project_id", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_gitlab_configs_on_project_id"
@@ -117,11 +118,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_072606) do
   create_table "projects", force: :cascade do |t|
     t.boolean "active"
     t.datetime "created_at", null: false
-    t.string "gitlab_project_id"
     t.string "name"
-    t.string "slack_channel_id"
     t.string "slug"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "redmine_configs", force: :cascade do |t|
+    t.string "api_key", null: false
+    t.string "base_url", null: false
+    t.datetime "created_at", null: false
+    t.bigint "project_id", null: false
+    t.string "redmine_project_id"
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_redmine_configs_on_project_id"
+  end
+
+  create_table "slack_configs", force: :cascade do |t|
+    t.string "bot_token", null: false
+    t.string "channel_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_slack_configs_on_project_id"
   end
 
   create_table "summary_logs", force: :cascade do |t|
@@ -135,5 +153,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_072606) do
   end
 
   add_foreign_key "gitlab_configs", "projects"
+  add_foreign_key "redmine_configs", "projects"
+  add_foreign_key "slack_configs", "projects"
   add_foreign_key "summary_logs", "projects"
 end
