@@ -78,24 +78,28 @@ GEM
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
-    async (1.32.1)
-      console (~> 1.10)
-      nio4r (~> 2.3)
-      timers (~> 4.1)
-    async-http (0.52.5)
-      async (~> 1.25)
-      async-io (~> 1.28)
-      async-pool (~> 0.2)
-      protocol-http (~> 0.20.0)
-      protocol-http1 (~> 0.13.0)
-      protocol-http2 (~> 0.14.0)
+    async (2.36.0)
+      console (~> 1.29)
+      fiber-annotation
+      io-event (~> 1.11)
+      metrics (~> 0.12)
+      traces (~> 0.18)
+    async-http (0.94.2)
+      async (>= 2.10.2)
+      async-pool (~> 0.11)
+      io-endpoint (~> 0.14)
+      io-stream (~> 0.6)
+      metrics (~> 0.12)
+      protocol-http (~> 0.58)
+      protocol-http1 (~> 0.36)
+      protocol-http2 (~> 0.22)
+      protocol-url (~> 0.2)
+      traces (~> 0.10)
     async-http-faraday (0.22.1)
       async-http (~> 0.42)
       faraday
-    async-io (1.43.2)
-      async
-    async-pool (0.10.3)
-      async (>= 1.25)
+    async-pool (0.11.1)
+      async (>= 2.0)
     base64 (0.3.0)
     bcrypt_pbkdf (1.1.2)
     bigdecimal (4.0.1)
@@ -202,6 +206,9 @@ GEM
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
     io-console (0.8.2)
+    io-endpoint (0.16.0)
+    io-event (1.14.2)
+    io-stream (0.11.1)
     irb (1.16.0)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
@@ -231,6 +238,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.1.0)
+    metrics (0.15.0)
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
@@ -291,12 +299,13 @@ GEM
       activesupport (>= 7.0.0)
       rack
     protocol-hpack (1.5.1)
-    protocol-http (0.20.1)
-    protocol-http1 (0.13.2)
-      protocol-http (~> 0.19)
-    protocol-http2 (0.14.2)
+    protocol-http (0.58.1)
+    protocol-http1 (0.37.0)
+      protocol-http (~> 0.58)
+    protocol-http2 (0.24.0)
       protocol-hpack (~> 1.4)
-      protocol-http (~> 0.18)
+      protocol-http (~> 0.47)
+    protocol-url (0.4.0)
     psych (5.3.1)
       date
       stringio
@@ -472,7 +481,7 @@ GEM
     thruster (0.1.17-arm64-darwin)
     thruster (0.1.17-x86_64-linux)
     timeout (0.6.0)
-    timers (4.4.0)
+    traces (0.18.2)
     tsort (0.2.0)
     turbo-rails (2.0.20)
       actionpack (>= 7.1.0)
@@ -512,7 +521,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  async-http (~> 0.52.3)
+  async-http (~> 0.94.2)
   async-http-faraday
   bootsnap
   brakeman (~> 7.1)
